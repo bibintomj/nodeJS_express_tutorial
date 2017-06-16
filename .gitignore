@@ -1,0 +1,6 @@
+# git will ignore following directories and files
+node_modules/
+public/uploads
+.vscode/
+logs
+*.log
