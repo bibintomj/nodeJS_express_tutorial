@@ -1,0 +1,43 @@
+<!-- Header -->
+<%- include('./layouts/header') %>
+<!-- /Header -->
+<div class="page-data">
+    <div class="data-btn">
+        <a class="btn btn-warning"href="/">Go Home</a>
+    </div>
+    <div class="data-table">
+        <table border="1" cellpadding="7" cellspacing="7" style="margin-top: 10px;" >
+            <tr>
+                <th width="50px">No</th>
+                <th>Name</th>
+                <th>age</th>
+                <th>image</th>
+                <th width="120px">Action</th>
+            </tr>
+            <% if(userData) {
+                userData.forEach((user, i) => {
+            %>
+            <tr>
+                <td><%= i+1 %></td>
+                <td><%= user.name %></td>
+                <td><%= user.age %></td>
+                <td><% if (user.profile) { %><%= user.profile %><% } else { %><b>-</b><% } %></td>
+                <td>
+                  <a class="a-inside btn btn-info" href="/user/add/<%= user.id %>">Edit</a>
+                  <a class="a-inside btn btn-danger" href="/user/delete/<%= user.id %>">Delete</a>
+                </td>
+            </tr>
+            <%
+              })
+            } else{ %>
+              <tr>
+                  <td colspan="3">No user</td>
+              </tr>
+            <% } %>
+        </table>
+    </div>
+</div>
+
+<!-- Footer -->
+<%- include('./layouts/footer') %>
+<!-- /Footer -->

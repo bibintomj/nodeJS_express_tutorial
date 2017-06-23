@@ -1,0 +1,76 @@
+<!-- Header -->
+<%- include('./layouts/header') %>
+<!-- /Header -->
+<!-- form -->
+<form method="post" action="/user/<%if (typeof (userData) !== 'undefined') { %>edit<% } else { %>add<% } %>" enctype="multipart/form-data" >
+  <% if(typeof (userData) !== 'undefined' && userData.id) { %>
+    <input type="hidden" name="id" value="<%= userData.id %>" >
+  <% } %>
+  <!-- name -->
+  <div class="form-group">
+    <a href="/" class="btn btn-warning">Go Home</a>
+  </div>
+  <div class="form-group">
+    <labe for="name">Name</labe>
+    <input
+      type="text"
+      id="name"
+      name="name"
+      class="form-control"
+      value="<% if(typeof (userData) !== 'undefined' && userData.name) { %><%= userData.name %><% } %>">
+  </div>
+  <!-- /name -->
+  <!-- age -->
+  <div class="form-group">
+    <labe for="age">Age</labe>
+    <input
+      type="text"
+      id="age"
+      name="age"
+      class="form-control"
+      value="<% if(typeof (userData) !== 'undefined' && userData.age) { %><%= userData.age %><% } %>">
+  </div>
+  <!-- /age -->
+  <!-- dob -->
+  <div class="form-group">
+    <labe for="dob">Date of Birth</labe>
+    <input
+      type="date"
+      id="dob"
+      name="dob"
+      class="form-control"
+      value="<% if(typeof (userData) !== 'undefined' && userData.dob) { %><%= userData.dob %><% } %>">
+  </div>
+  <!-- /dob -->
+  <!-- image -->
+  <div class="form-group">
+    <labe for="image">Image</labe>
+    <input
+      type="file"
+      id="image"
+      name="image"
+      class="form-control">
+  </div>
+  <% if(typeof (userData) !== 'undefined' && userData.profile) { %>
+    <div class="form-group">
+      <figure>
+        <img src="/uploads/<%= userData.profile %>" height="100" width="150">
+        <figcaption><%= userData.profile %></figcaption>
+      <figure>
+    </div>
+  <% } %>
+  <!-- /image -->
+  <!-- submit -->
+  <div class="form-group">
+    <input
+      type="submit"
+      id="submit"
+      name="submit"
+      class="btn btn-sucess">
+    </div>
+    <!-- submit -->
+</form>
+<!-- form -->
+<!-- Footer -->
+<%- include('./layouts/footer') %>
+<!-- /Footer -->
