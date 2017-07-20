@@ -8,6 +8,8 @@ const Sequelize = require('sequelize')
 const bodyParser = require('body-parser')
 // File upload helper
 const expressFileUpload = require('express-fileupload')
+// Form validation package
+const validate = require('validate.js')
 
 // =========================== Package Config ========================
 // Get's the object express framework
@@ -72,6 +74,32 @@ const User = ormObj.define('user', { // Table name
   timestamps: false // Prevents sequelize from creating default columns
 })
 
+// Validaton rules for user form validation
+const userRules = {
+  name: { // form field name
+    presence: true,
+    length: {
+      maximum: 10,
+      message: 'More than 10 character is not allowed in the Name field'
+    }
+  },
+  age: {
+    presence: true,
+    numericality: {
+      onlyInteger: true,
+      greaterThanOrEqualTo: 18,
+      lessThanOrEqualTo: 60
+    }
+  },
+  dob: { // Date of birth rule
+    presence: false,
+    format: {
+      pattern: '\\d{4}-\\d{2}-\\d{2}',
+      message: '^Please enter a valid date of birth'
+    }
+  }
+}
+
 // =========================== Routes ================================
 // Home page route
 app.get('/', function (req, res, next) {
@@ -97,42 +125,50 @@ app.get('/hello/:name', function (req, res, next) {
 // ___________________________ Create User Operation _________________
 app.get('/user/add', function (req, res, next) {
   req.app.locals.pageTitle = 'Add User'
+
   res.render('add')
 })
 
 app.post('/user/add', function (req, res, next) {
-  // gets POST body
-  let formData = req.body
+  // Validating user form
+  let errors = validate(req.body, userRules)
 
-  // Gets uploaded image object
-  let imageData = req.files.image
+  if (errors) {
+    res.render('add', { errors: errors })
+  } else {
+    // gets POST body
+    let formData = req.body
 
-  // Uploading image to /public/uploads directory if present
-  if (imageData) {
-    imageData.mv(
-      path.join(__dirname, './public/uploads/', imageData.name),
-      function (err) {
-        if (err) {
-          next(new Error(err))
+    // Gets uploaded image object
+    let imageData = req.files.image
+
+    // Uploading image to /public/uploads directory
+    if (imageData) {
+      imageData.mv(
+        path.join(__dirname, './public/uploads/', imageData.name),
+        function (err) {
+          if (err) {
+            next(new Error(err))
+          }
         }
-      }
-    )
+      )
+    }
+
+    // Save data to database
+    // following create function is equivalent to
+    // INSERT INTO user(name, age, dob, doj) VALUES ('joe', 25, ...)
+    User.create({
+      name: formData.name,
+      age: formData.age,
+      dob: formData.dob,
+      doj: Sequelize.fn('NOW'),
+      profile: imageData ? imageData.name : null
+    }).catch(err => {
+      if (err) next(new Error(err))
+    })
+
+    res.redirect('/user/list')
   }
-
-  // Save data to database
-  // following create function is equivalent to
-  // INSERT INTO user(name, age, dob, doj) VALUES ('joe', 25, ...)
-  User.create({
-    name: formData.name,
-    age: formData.age,
-    dob: formData.dob,
-    doj: Sequelize.fn('NOW'),
-    profile: imageData ? imageData.name : null
-  }).catch(err => {
-    if (err) next(new Error(err))
-  })
-
-  res.redirect('/user/list')
 })
 
 // ___________________________ List User Operation ___________________

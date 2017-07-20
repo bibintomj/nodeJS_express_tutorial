@@ -6,6 +6,10 @@
   <% if(typeof (userData) !== 'undefined' && userData.id) { %>
     <input type="hidden" name="id" value="<%= userData.id %>" >
   <% } %>
+  <% if (typeof (errors) !== 'undefined') {
+    console.log(errors)
+  }
+  %>
   <!-- name -->
   <div class="form-group">
     <a href="/" class="btn btn-warning">Go Home</a>
