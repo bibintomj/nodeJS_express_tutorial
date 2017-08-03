@@ -5,6 +5,51 @@
     integrity="sha256-hwg4gsxgFZhOsEEamdOYGBf13FyQuiTwlAQgxVSNgt4="
     crossorigin="anonymous">
     </script>
+
+    <!--<script src="/socket.io/socket.io.js"></script>
+    <script src="https://code.jquery.com/jquery-1.11.1.js"></script>
+    <script>
+      $(function () {
+        var socket = io();
+        $('#send-chat').click(function(){
+          socket.emit('chat message', $('#text-chat').val())
+          $('#text-chat').val('')
+          return false;
+        })
+      })
+    </script>-->
+
+<script src="/socket.io/socket.io.js"></script>
+<script src="https://code.jquery.com/jquery-1.11.1.js"></script>
+<script>
+  $(function () {
+    var socket = io();
+    $('#send-chat').click(function(){
+      var user = $('#chat-user').val()
+      socket.emit('chat message', $('#text-chat').val(), user);
+      $('#text-chat').val('');
+
+      return false;
+    });
+
+    socket.on('display message',function (msg, user) {
+      console.log('Message : ' + msg)
+       $('#text-area').append( user + ' says : '  + msg + '\n');
+    })
+  });
+
+</script>
+
+
+
+
+
+
+
+
+
+
+
     <script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/js/bootstrap.min.js"></script>
   </body>
 </html>

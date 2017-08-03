@@ -14,7 +14,12 @@ const validate = require('validate.js')
 // =========================== Package Config ========================
 // Get's the object express framework
 const app = express()
-const port = 4000 // port
+const port = 3300 // port
+
+// Getting the HTTP module
+var http = require('http').Server(app)
+// Getting the Socket IO package
+var io = require('socket.io')(http)
 
 // Setting directory to serve static content
 app.use(express.static(path.join(__dirname, 'public')))
@@ -281,8 +286,15 @@ app.use(function (err, req, res, next) {
   )
 })
 
+// ---------------------- Socket IO --------------------------
+io.on('connection', function (socket) {
+  socket.on('chat message', function (msg, user) {
+    io.emit('display message', msg, user)
+  })
+})
+
 // =========================== Server Setup ==========================
-app.listen(port, function () {
+http.listen(port, function () {
   console.log(`Express started on http://localhost:'${port};
   press Ctrl-C to terminate.`
   )
